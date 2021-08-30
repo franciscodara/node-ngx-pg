@@ -1,0 +1,29 @@
+version: "3"
+
+services: 
+  web:
+    image: nginx
+    restart: always
+    volumes:
+      - ./templates:/etc/nginx/templates
+      - ./nginx/app.conf:/etc/nginx/nginx.conf
+    depends_on:
+     - myapp
+    ports:
+      - "80:80"
+  
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  myapp:
+    image: franciscodara/myapp-dockerizado:latest
+    restart: always
+    build: .
+    depends_on:
+      - db
